@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="15">
+    <title>Edu's Forms</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <!-- title -->
+    <h3 id="page-title">Edu's Forms</h3>
+    <h2 id="form-title">Example form - Editor</h2>
+
+    <!-- form editor form -->
+    <section>
+        <label for="e-mail">e-mail:</label>
+        <input type="email" name="e-mail" id="">
+        <button name="edit" onclick="document.getElementById('hiden').style.display = 'block'">🖉</button>
+        <div id="hiden" style="display: none;">
+            <fieldset>
+                <legend>
+                    <button>↑</button>
+                    <button>↓</button>
+                    <button onclick="document.getElementById('hiden').style.display = 'none'">save</button>
+                    <button>delete</button>
+                </legend>
+                <br>
+                <label for="label">Label (visible)</label><br>
+                <input type="text" name="label" id="form-entry-label" value="e-mail:">
+                <br>
+                <br>
+                <label for="name">Name (not visible, column name in the result table)</label><br>
+                <input type="text" name="name" id="form-entry-name" value="email">
+                <br>
+                <br>
+                <label for="type">Type</label>
+                <select name="type" id="">
+                    <option value="mail" selected>email</option>
+                </select>
+                <br>
+                <br>
+                <label for="placeholder">Placeholder</label><br>
+                <input type="text" name="placeholder" id="form-entry-placeholder">
+            </fieldset>
+        </div>
+
+        <br>
+        <br>
+        <button id="add-form-entry">Add new entry</button>
+    </section>
+
+</body>
+
+</html>
