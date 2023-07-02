@@ -13,18 +13,15 @@
     <h3 id="page-title">Edu's Forms</h3>
     <h2 id="form-title">Example form - Editor</h2>
 
-    <!-- form editor form -->
-    <section>
-        <label for="e-mail">e-mail:</label>
-        <input type="email" name="e-mail" id="">
-        <button name="edit" onclick="document.getElementById('hiden').style.display = 'block'">🖉</button>
-        <div id="hiden" style="display: none;">
-            <fieldset>
-                <legend>
-                    <button>↑</button>
-                    <button>↓</button>
-                    <button onclick="document.getElementById('hiden').style.display = 'none'">save</button>
-                    <button>delete</button>
+    <!-- form editor form (will be copy-pasted when needed) -->
+    <button name="editButton" class="not-visible">🖉</button>
+    <section name="editor" class="not-visible">
+        <fieldset>
+            <legend>
+                <button name="upBtn">↑</button>
+                <button name="downBtn">↓</button>
+                <button name="saveBtn">save</button>
+                <button name="deleteBtn">delete</button>
                 </legend>
                 <br>
                 <label for="label">Label (visible)</label><br>
@@ -43,14 +40,22 @@
                 <br>
                 <label for="placeholder">Placeholder</label><br>
                 <input type="text" name="placeholder" id="form-entry-placeholder">
-            </fieldset>
-        </div>
-
-        <br>
-        <br>
-        <button id="add-form-entry">Add new entry</button>
+                </fieldset>
     </section>
+    
+    <!-- form section -->
+    <section id="form">
+        <!-- example -->
+        <div id="element-01" position="0">
+            <br />
+            <label for="e-mail">e-mail:</label>
+            <input type="email" name="e-mail" id="">
+        </div>
+    </section>
+    <br />
+    <button id="add-form-entry">Add new entry</button>
 
+    <script src="js/main.js" type="module"></script>
 </body>
 
 </html>

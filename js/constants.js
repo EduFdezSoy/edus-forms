@@ -31,5 +31,6 @@ export default {
         "datalist",
         "output",
         "optiongroup"
-    ]
+    ],
+    LOOP_TIME: 1000,
 }
