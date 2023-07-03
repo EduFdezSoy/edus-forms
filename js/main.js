@@ -43,10 +43,50 @@ function setEditor(element) {
     const editor = document.querySelector("[name=editor]").cloneNode(true);
 
     // editor elements
+    // buttons
     const upBtn = editor.querySelector("[name=upBtn]");
     const downBtn = editor.querySelector("[name=downBtn]");
     const saveBtn = editor.querySelector("[name=saveBtn]");
     const deleteBtn = editor.querySelector("[name=deleteBtn]");
+    // inputs
+    const labelInput = editor.querySelector("[name=label]")
+    const nameInput = editor.querySelector("[name=name]");
+    const placeholderInput = editor.querySelector("[name=placeholder]");
+    const typeInput = editor.querySelector("[name=type]");
+
+    // populate type list
+    constants.inputTypeList.forEach(type => {
+        const el = document.createElement("option");
+        el.textContent = type;
+        el.value = type;
+
+        if (type == input.type)
+            el.setAttribute("selected", "selected");
+
+        typeInput.appendChild(el);
+    });
+
+    // put values to inputs
+    labelInput.value = label.textContent;
+    nameInput.value = input.getAttribute("name");
+    placeholderInput.value = input.getAttribute("placeholder");
+
+    // set input listeners
+    labelInput.addEventListener("input", (e) => {
+        label.textContent = e.target.value;
+    });
+
+    nameInput.addEventListener("input", (e) => {
+        input.setAttribute("name", e.target.value);
+    });
+
+    placeholderInput.addEventListener("input", (e) => {
+        input.setAttribute("placeholder", e.target.value);
+    });
+
+    typeInput.addEventListener("input", (e) => {
+        input.setAttribute("type", e.target.value);
+    })
 
     // set ids
     editBtn.setAttribute("id", `${id}-editbtn`);
@@ -72,6 +112,7 @@ function setEditor(element) {
 
         }
     });
+
     downBtn.addEventListener("click", () => {
         let pos = element.getAttribute("position");
 
@@ -81,7 +122,7 @@ function setEditor(element) {
         }
 
         // TODO: save to database
-    })
+    });
 
     saveBtn.addEventListener("click", () => {
         editor.style.display = "none";
@@ -92,6 +133,8 @@ function setEditor(element) {
         element.remove();
         // TODO: save to database
     });
+
+    // TODO: exceptions based on input type
 
     // append elements
     element.appendChild(editBtn);
