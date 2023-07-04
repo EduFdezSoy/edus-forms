@@ -11,21 +11,35 @@ init();
 mainLoop();
 
 async function init() {
-    // if data in path load form
-    // if data has editor flag opens editor for that form
-    // TODO: check if the user has edit rights (add a config variable to check or not to check this)
-    // else show editor generator
+    const pathVar = window.location.pathname;
 
-    // TODO: add a loop till null div example: element-01
-    const element = document.getElementById("element-01");
-    setEditor(element);
+    // no form = show form generator
+    if (pathVar == "" || pathVar == "/") {
+        // TODO: check user rights
+        // TODO: create form generator
 
-    formInputCount++;
+    } else { // if data in path
+        const formID = pathVar.split("-")[0].replace(/^\/+/, "");
 
-    // set add input form button event
-    document.getElementById("add-form-entry").addEventListener("click", () => {
-        addNewInput();
-    });
+        // show the form
+        console.log(formID);
+        // TODO: add a loop till null div example: element-01
+        const element = document.getElementById("element-01");
+        formInputCount++;
+
+        if (pathVar.split("-")[1] == "edit") { // if edit flag, open editor
+            // TODO: check if the user has edit rights (add a config variable to check or not to check this)
+            console.log("editor!");
+            setEditor(element);
+
+            // set add input form button event
+            const addInputBtn = document.getElementById("add-form-entry");
+            addInputBtn.style.display = "block";
+            addInputBtn.addEventListener("click", () => {
+                addNewInput();
+            });
+        }
+    }
 }
 
 function mainLoop() {
