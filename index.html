@@ -25,19 +25,29 @@
                 </legend>
                 <br>
                 <label for="label">Label (visible)</label><br>
-                <input type="text" name="label" id="form-entry-label" value="e-mail:">
+                <input type="text" name="label" value="e-mail:">
+                <select name="label-position">
+                    <option value="top">On top</option>
+                    <option value="side" selected>On the side</option>
+                    <option value="hide">Hide</option>
+                </select>
                 <br>
                 <br>
                 <label for="name">Name (not visible, column name in the result table)</label><br>
-                <input type="text" name="name" id="form-entry-name" value="email">
+                <input type="text" name="name" value="email">
                 <br>
                 <br>
                 <label for="type">Type</label>
                 <select name="type"></select>
                 <br>
                 <br>
-                <label for="placeholder">Placeholder</label><br>
-                <input type="text" name="placeholder" id="form-entry-placeholder">
+                <label for="placeholder">Placeholder (usually used as an example text, disapears when typeing)</label><br>
+                <input type="text" name="placeholder">
+                <br>
+                <br>
+                <label for="Value">Value (default text, needs to be deleted)</label><br>
+                <input type="text" name="value">
+                <br>
                 </fieldset>
     </section>
     

@@ -49,10 +49,12 @@ function setEditor(element) {
     const saveBtn = editor.querySelector("[name=saveBtn]");
     const deleteBtn = editor.querySelector("[name=deleteBtn]");
     // inputs
-    const labelInput = editor.querySelector("[name=label]")
+    const labelInput = editor.querySelector("[name=label]");
+    const labelPositionInput = editor.querySelector("[name=label-position]");
     const nameInput = editor.querySelector("[name=name]");
     const placeholderInput = editor.querySelector("[name=placeholder]");
     const typeInput = editor.querySelector("[name=type]");
+    const valueInput = editor.querySelector("[name=value]");
 
     // populate type list
     constants.inputTypeList.forEach(type => {
@@ -70,23 +72,36 @@ function setEditor(element) {
     labelInput.value = label.textContent;
     nameInput.value = input.getAttribute("name");
     placeholderInput.value = input.getAttribute("placeholder");
+    valueInput.value = input.getAttribute("value");
 
     // set input listeners
     labelInput.addEventListener("input", (e) => {
         label.textContent = e.target.value;
     });
-
-    nameInput.addEventListener("input", (e) => {
-        input.setAttribute("name", e.target.value);
+    setInputListener(nameInput, input, "name");
+    setInputListener(placeholderInput, input, "placeholder");
+    setInputListener(typeInput, input, "type");
+    setInputListener(valueInput, input, "value");
+    // label position selector
+    labelPositionInput.addEventListener("input", (e) => {
+        switch (e.target.value) {
+            case "top":
+                label.style.display = "inline";
+                if (!(label.nextElementSibling instanceof HTMLBRElement))
+                    label.nextElementSibling.parentNode.insertBefore(document.createElement("br"), label.nextElementSibling)
+                break;
+            case "side":
+                label.style.display = "inline";
+                if (label.nextElementSibling instanceof HTMLBRElement)
+                    label.nextElementSibling.remove()
+                break;
+            case "hide":
+                label.style.display = "none";
+                if (label.nextElementSibling instanceof HTMLBRElement)
+                    label.nextElementSibling.remove()
+                break;
+        }
     });
-
-    placeholderInput.addEventListener("input", (e) => {
-        input.setAttribute("placeholder", e.target.value);
-    });
-
-    typeInput.addEventListener("input", (e) => {
-        input.setAttribute("type", e.target.value);
-    })
 
     // set ids
     editBtn.setAttribute("id", `${id}-editbtn`);
@@ -102,7 +117,6 @@ function setEditor(element) {
 
     upBtn.addEventListener("click", () => {
         let pos = element.getAttribute("position");
-
 
         if (pos > 0) {
             element.setAttribute("position", --pos);
@@ -184,3 +198,21 @@ function prepareElement(input) {
 
     return div;
 }
+
+//#region private functions
+
+/**
+ * set an input event to {input} element and, on event, 
+ * puts an attribute {attribute} to {output} element
+ * 
+ * @param {HTMLElement} input element to put the listener to
+ * @param {HTMLElement} output element to add the value on event
+ * @param {string} attribute attribute to put the value to
+ */
+function setInputListener(input, output, attribute) {
+    input.addEventListener("input", (e) => {
+        output.setAttribute(attribute, e.target.value);
+    });
+}
+
+//#endregion
