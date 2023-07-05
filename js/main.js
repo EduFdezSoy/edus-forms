@@ -9,6 +9,9 @@ var formInputCount = 0;
 init();
 mainLoop();
 
+/**
+ * Initialization function, starts the program
+ */
 async function init() {
   const pathVar = window.location.pathname;
 
@@ -17,8 +20,9 @@ async function init() {
     // TODO: check user rights
     document.getElementById("create-form-dg").setAttribute("open", "");
     // TODO: save to database and redirect to new_id-edit
-  } else {
+
     // if data in path
+  } else {
     const formID = pathVar.split("-")[0].replace(/^\/+/, "");
 
     // show the form
@@ -30,8 +34,8 @@ async function init() {
     // TODO: if form not found in database
     // setError(404, "This form was not found");
 
+    // if edit flag, open editor
     if (pathVar.split("-")[1] == "edit") {
-      // if edit flag, open editor
       // TODO: check if the user has edit rights (add a config variable to check or not to check this)
       console.log("editor!");
       setEditor(element);
@@ -46,10 +50,18 @@ async function init() {
   }
 }
 
+/**
+ * main loop, currently just eating memory
+ */
 function mainLoop() {
   setTimeout(() => {}, constants.LOOP_TIME);
 }
 
+/**
+ * sets the editor to the required element
+ *
+ * @param {HTMLElement} element the HTMLElement to atach the editor
+ */
 function setEditor(element) {
   const id = element.getAttribute("id");
   const input = element.querySelector("input");
@@ -172,6 +184,9 @@ function setEditor(element) {
   element.appendChild(editor);
 }
 
+/**
+ * Creates a new input element inside the form
+ */
 function addNewInput() {
   const formContainer = document.getElementById("form");
   const element = document.createElement("input");
@@ -216,8 +231,6 @@ function prepareElement(input) {
   return div;
 }
 
-//#region private functions
-
 /**
  * set an input event to {input} element and, on event,
  * puts an attribute {attribute} to {output} element
@@ -248,4 +261,3 @@ function setError(errCode, errMessage) {
   // set visible
   errDialog.setAttribute("open", "");
 }
-//#endregion
