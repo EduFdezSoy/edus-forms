@@ -5,6 +5,7 @@ import constants from "./constants.js";
 const pb = new PocketBase(config.base_url);
 
 var formInputCount = 0;
+var form = null;
 
 init();
 mainLoop();
@@ -17,22 +18,43 @@ async function init() {
 
   // no form = show form generator
   if (pathVar == "" || pathVar == "/") {
-    // TODO: check user rights
-    document.getElementById("create-form-dg").setAttribute("open", "");
-    // TODO: save to database and redirect to new_id-edit
+    // TODO: check user permissions
+    const createDialog = document.getElementById("create-form-dg");
+    createDialog.setAttribute("open", "");
+    createDialog.querySelector("button").addEventListener("click", async () => {
+      const form_name = createDialog.querySelector("input").value;
+
+      if (form_name == "") {
+        setError(
+          "please, set a name to create a new form",
+          "No name set!",
+          true
+        );
+      } else {
+        const res = await pb.collection(config.collection_name).create({
+          name: createDialog.querySelector("input").value,
+        });
+        window.location.pathname = `/${res.id}-edit`;
+      }
+    });
 
     // if data in path
   } else {
     const formID = pathVar.split("-")[0].replace(/^\/+/, "");
 
+    // get data from server
+    try {
+      form = await pb.collection(config.collection_name).getOne(formID);
+    } catch (error) {
+      setError(404, "This form was not found");
+    }
+
     // show the form
-    console.log(formID);
+    console.log(form);
+
     // TODO: add a loop till null div example: element-01
     const element = document.getElementById("element-01");
     formInputCount++;
-
-    // TODO: if form not found in database
-    // setError(404, "This form was not found");
 
     // if edit flag, open editor
     if (pathVar.split("-")[1] == "edit") {
@@ -248,15 +270,21 @@ function setInputListener(input, output, attribute) {
 /**
  * puts an error dialog on the screen
  *
- * @param {Number} errCode example: 404
+ * @param {Number | String | null} errCode example: 404
  * @param {String} errMessage example: not found
+ * @param {Boolean} close show or not a close button
  */
-function setError(errCode, errMessage) {
+function setError(errCode, errMessage, close = false) {
   const errDialog = document.getElementById("error-dg");
 
   // put error
   errDialog.querySelector("span").textContent = errCode;
   errDialog.querySelector("h2").textContent = errMessage;
+
+  // hide button
+  if (!close) {
+    errDialog.querySelector("button").style.display = "none";
+  }
 
   // set visible
   errDialog.setAttribute("open", "");
