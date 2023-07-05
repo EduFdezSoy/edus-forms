@@ -6,248 +6,246 @@ const pb = new PocketBase(config.base_url);
 
 var formInputCount = 0;
 
-
 init();
 mainLoop();
 
 async function init() {
-    const pathVar = window.location.pathname;
+  const pathVar = window.location.pathname;
 
-    // no form = show form generator
-    if (pathVar == "" || pathVar == "/") {
-        // TODO: check user rights
-        document.getElementById("create-form-dg").setAttribute("open", "");
-        // TODO: save to database and redirect to new_id-edit
+  // no form = show form generator
+  if (pathVar == "" || pathVar == "/") {
+    // TODO: check user rights
+    document.getElementById("create-form-dg").setAttribute("open", "");
+    // TODO: save to database and redirect to new_id-edit
+  } else {
+    // if data in path
+    const formID = pathVar.split("-")[0].replace(/^\/+/, "");
 
-    } else { // if data in path
-        const formID = pathVar.split("-")[0].replace(/^\/+/, "");
+    // show the form
+    console.log(formID);
+    // TODO: add a loop till null div example: element-01
+    const element = document.getElementById("element-01");
+    formInputCount++;
 
-        // show the form
-        console.log(formID);
-        // TODO: add a loop till null div example: element-01
-        const element = document.getElementById("element-01");
-        formInputCount++;
+    // TODO: if form not found in database
+    // setError(404, "This form was not found");
 
-        // TODO: if form not found in database
-        // setError(404, "This form was not found");
+    if (pathVar.split("-")[1] == "edit") {
+      // if edit flag, open editor
+      // TODO: check if the user has edit rights (add a config variable to check or not to check this)
+      console.log("editor!");
+      setEditor(element);
 
-
-        if (pathVar.split("-")[1] == "edit") { // if edit flag, open editor
-            // TODO: check if the user has edit rights (add a config variable to check or not to check this)
-            console.log("editor!");
-            setEditor(element);
-
-            // set add input form button event
-            const addInputBtn = document.getElementById("add-form-entry");
-            addInputBtn.style.display = "block";
-            addInputBtn.addEventListener("click", () => {
-                addNewInput();
-            });
-        }
+      // set add input form button event
+      const addInputBtn = document.getElementById("add-form-entry");
+      addInputBtn.style.display = "block";
+      addInputBtn.addEventListener("click", () => {
+        addNewInput();
+      });
     }
+  }
 }
 
 function mainLoop() {
-    setTimeout(() => {
-
-    }, constants.LOOP_TIME);
+  setTimeout(() => {}, constants.LOOP_TIME);
 }
 
 function setEditor(element) {
-    const id = element.getAttribute("id");
-    const input = element.querySelector("input");
-    const label = element.querySelector("label");
+  const id = element.getAttribute("id");
+  const input = element.querySelector("input");
+  const label = element.querySelector("label");
 
-    const editBtn = document.querySelector("[name=editButton]").cloneNode(true);
-    const editor = document.querySelector("[name=editor]").cloneNode(true);
+  const editBtn = document.querySelector("[name=editButton]").cloneNode(true);
+  const editor = document.querySelector("[name=editor]").cloneNode(true);
 
-    // editor elements
-    // buttons
-    const upBtn = editor.querySelector("[name=upBtn]");
-    const downBtn = editor.querySelector("[name=downBtn]");
-    const saveBtn = editor.querySelector("[name=saveBtn]");
-    const deleteBtn = editor.querySelector("[name=deleteBtn]");
-    // inputs
-    const labelInput = editor.querySelector("[name=label]");
-    const labelPositionInput = editor.querySelector("[name=label-position]");
-    const nameInput = editor.querySelector("[name=name]");
-    const placeholderInput = editor.querySelector("[name=placeholder]");
-    const typeInput = editor.querySelector("[name=type]");
-    const valueInput = editor.querySelector("[name=value]");
+  // editor elements
+  // buttons
+  const upBtn = editor.querySelector("[name=upBtn]");
+  const downBtn = editor.querySelector("[name=downBtn]");
+  const saveBtn = editor.querySelector("[name=saveBtn]");
+  const deleteBtn = editor.querySelector("[name=deleteBtn]");
+  // inputs
+  const labelInput = editor.querySelector("[name=label]");
+  const labelPositionInput = editor.querySelector("[name=label-position]");
+  const nameInput = editor.querySelector("[name=name]");
+  const placeholderInput = editor.querySelector("[name=placeholder]");
+  const typeInput = editor.querySelector("[name=type]");
+  const valueInput = editor.querySelector("[name=value]");
 
-    // populate type list
-    constants.inputTypeList.forEach(type => {
-        const el = document.createElement("option");
-        el.textContent = type;
-        el.value = type;
+  // populate type list
+  constants.inputTypeList.forEach((type) => {
+    const el = document.createElement("option");
+    el.textContent = type;
+    el.value = type;
 
-        if (type == input.type)
-            el.setAttribute("selected", "selected");
+    if (type == input.type) el.setAttribute("selected", "selected");
 
-        typeInput.appendChild(el);
-    });
+    typeInput.appendChild(el);
+  });
 
-    // put values to inputs
-    labelInput.value = label.textContent;
-    nameInput.value = input.getAttribute("name");
-    placeholderInput.value = input.getAttribute("placeholder");
-    valueInput.value = input.getAttribute("value");
+  // put values to inputs
+  labelInput.value = label.textContent;
+  nameInput.value = input.getAttribute("name");
+  placeholderInput.value = input.getAttribute("placeholder");
+  valueInput.value = input.getAttribute("value");
 
-    // set input listeners
-    labelInput.addEventListener("input", (e) => {
-        label.textContent = e.target.value;
-    });
-    setInputListener(nameInput, input, "name");
-    setInputListener(placeholderInput, input, "placeholder");
-    setInputListener(typeInput, input, "type");
-    setInputListener(valueInput, input, "value");
-    // label position selector
-    labelPositionInput.addEventListener("input", (e) => {
-        switch (e.target.value) {
-            case "top":
-                label.style.display = "inline";
-                if (!(label.nextElementSibling instanceof HTMLBRElement))
-                    label.nextElementSibling.parentNode.insertBefore(document.createElement("br"), label.nextElementSibling)
-                break;
-            case "side":
-                label.style.display = "inline";
-                if (label.nextElementSibling instanceof HTMLBRElement)
-                    label.nextElementSibling.remove()
-                break;
-            case "hide":
-                label.style.display = "none";
-                if (label.nextElementSibling instanceof HTMLBRElement)
-                    label.nextElementSibling.remove()
-                break;
-        }
-    });
+  // set input listeners
+  labelInput.addEventListener("input", (e) => {
+    label.textContent = e.target.value;
+  });
+  setInputListener(nameInput, input, "name");
+  setInputListener(placeholderInput, input, "placeholder");
+  setInputListener(typeInput, input, "type");
+  setInputListener(valueInput, input, "value");
+  // label position selector
+  labelPositionInput.addEventListener("input", (e) => {
+    switch (e.target.value) {
+      case "top":
+        label.style.display = "inline";
+        if (!(label.nextElementSibling instanceof HTMLBRElement))
+          label.nextElementSibling.parentNode.insertBefore(
+            document.createElement("br"),
+            label.nextElementSibling
+          );
+        break;
+      case "side":
+        label.style.display = "inline";
+        if (label.nextElementSibling instanceof HTMLBRElement)
+          label.nextElementSibling.remove();
+        break;
+      case "hide":
+        label.style.display = "none";
+        if (label.nextElementSibling instanceof HTMLBRElement)
+          label.nextElementSibling.remove();
+        break;
+    }
+  });
 
-    // set ids
-    editBtn.setAttribute("id", `${id}-editbtn`);
-    editor.setAttribute("id", `${id}-editor`);
+  // set ids
+  editBtn.setAttribute("id", `${id}-editbtn`);
+  editor.setAttribute("id", `${id}-editor`);
 
-    // set click listener
-    editBtn.style.display = "inline";
-    editBtn.addEventListener("click", () => {
-        editor.style.display = "block";
-    });
+  // set click listener
+  editBtn.style.display = "inline";
+  editBtn.addEventListener("click", () => {
+    editor.style.display = "block";
+  });
 
-    // set editor buttons actions
+  // set editor buttons actions
 
-    upBtn.addEventListener("click", () => {
-        let pos = element.getAttribute("position");
+  upBtn.addEventListener("click", () => {
+    let pos = element.getAttribute("position");
 
-        if (pos > 0) {
-            element.setAttribute("position", --pos);
+    if (pos > 0) {
+      element.setAttribute("position", --pos);
 
-            element.parentNode.insertBefore(element, element.previousElementSibling)
-            // TODO: save to database
+      element.parentNode.insertBefore(element, element.previousElementSibling);
+      // TODO: save to database
+    }
+  });
 
-        }
-    });
+  downBtn.addEventListener("click", () => {
+    let pos = element.getAttribute("position");
 
-    downBtn.addEventListener("click", () => {
-        let pos = element.getAttribute("position");
+    if (element.nextElementSibling) {
+      element.setAttribute("position", ++pos);
+      element.parentNode.insertBefore(element.nextElementSibling, element);
+    }
 
-        if (element.nextElementSibling) {
-            element.setAttribute("position", ++pos);
-            element.parentNode.insertBefore(element.nextElementSibling, element);
-        }
+    // TODO: save to database
+  });
 
-        // TODO: save to database
-    });
+  saveBtn.addEventListener("click", () => {
+    editor.style.display = "none";
+    // TODO: save to database
+  });
 
-    saveBtn.addEventListener("click", () => {
-        editor.style.display = "none";
-        // TODO: save to database
-    });
+  deleteBtn.addEventListener("click", () => {
+    element.remove();
+    // TODO: save to database
+  });
 
-    deleteBtn.addEventListener("click", () => {
-        element.remove();
-        // TODO: save to database
-    });
+  // TODO: exceptions based on input type
 
-    // TODO: exceptions based on input type
-
-    // append elements
-    element.appendChild(editBtn);
-    element.appendChild(editor);
+  // append elements
+  element.appendChild(editBtn);
+  element.appendChild(editor);
 }
 
 function addNewInput() {
-    const formContainer = document.getElementById("form");
-    const element = document.createElement("input")
+  const formContainer = document.getElementById("form");
+  const element = document.createElement("input");
 
-    const elementReady = prepareElement(element);
+  const elementReady = prepareElement(element);
 
-    formContainer.appendChild(elementReady);
+  formContainer.appendChild(elementReady);
 
-    setEditor(elementReady);
+  setEditor(elementReady);
 
-    // TODO: save to database
+  // TODO: save to database
 }
 
 /**
  * from an input element adds the ids, values and other html elements
- * 
+ *
  * @param {HTMLElement} input the input element to encapsulate
  * @returns {HTMLElement} the element tree formed and ready to be added to the DOM
  */
 function prepareElement(input) {
-    const tagName = `element-${(++formInputCount).toString().padStart(2, "0")}`;
+  const tagName = `element-${(++formInputCount).toString().padStart(2, "0")}`;
 
-    // setup continer
-    const div = document.createElement("div");
-    div.setAttribute("position", formInputCount);
-    div.setAttribute("id", tagName);
+  // setup continer
+  const div = document.createElement("div");
+  div.setAttribute("position", formInputCount);
+  div.setAttribute("id", tagName);
 
-    // add some space
-    const br = document.createElement("br");
-    div.appendChild(br);
+  // add some space
+  const br = document.createElement("br");
+  div.appendChild(br);
 
-    // set the label
-    const label = document.createElement("label");
-    label.textContent = "New Input";
-    label.setAttribute('for', `${tagName}-input`)
-    div.appendChild(label);
+  // set the label
+  const label = document.createElement("label");
+  label.textContent = "New Input";
+  label.setAttribute("for", `${tagName}-input`);
+  div.appendChild(label);
 
-    // set input tag
-    input.setAttribute("id", `${tagName}-input`)
-    div.appendChild(input);
+  // set input tag
+  input.setAttribute("id", `${tagName}-input`);
+  div.appendChild(input);
 
-    return div;
+  return div;
 }
 
 //#region private functions
 
 /**
- * set an input event to {input} element and, on event, 
+ * set an input event to {input} element and, on event,
  * puts an attribute {attribute} to {output} element
- * 
+ *
  * @param {HTMLElement} input element to put the listener to
  * @param {HTMLElement} output element to add the value on event
  * @param {String} attribute attribute to put the value to
  */
 function setInputListener(input, output, attribute) {
-    input.addEventListener("input", (e) => {
-        output.setAttribute(attribute, e.target.value);
-    });
+  input.addEventListener("input", (e) => {
+    output.setAttribute(attribute, e.target.value);
+  });
 }
 
 /**
  * puts an error dialog on the screen
- * 
+ *
  * @param {Number} errCode example: 404
  * @param {String} errMessage example: not found
  */
 function setError(errCode, errMessage) {
-    const errDialog = document.getElementById("error-dg");
+  const errDialog = document.getElementById("error-dg");
 
-    // put error
-    errDialog.querySelector("span").textContent = errCode;
-    errDialog.querySelector("h2").textContent = errMessage;
+  // put error
+  errDialog.querySelector("span").textContent = errCode;
+  errDialog.querySelector("h2").textContent = errMessage;
 
-    // set visible
-    errDialog.setAttribute("open", "");
+  // set visible
+  errDialog.setAttribute("open", "");
 }
 //#endregion
