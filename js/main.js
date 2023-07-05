@@ -49,8 +49,11 @@ async function init() {
       setError(404, "This form was not found");
     }
 
-    // show the form
+    // FIXME: debug show the form
     console.log(form);
+
+    // show the form title
+    document.getElementById("form-title").textContent = form.name;
 
     // TODO: add a loop till null div example: element-01
     const element = document.getElementById("element-01");
@@ -59,7 +62,10 @@ async function init() {
     // if edit flag, open editor
     if (pathVar.split("-")[1] == "edit") {
       // TODO: check if the user has edit rights (add a config variable to check or not to check this)
-      console.log("editor!");
+
+    // set title
+    document.getElementById("form-title").textContent += " - Edit Mode"
+
       setEditor(element);
 
       // set add input form button event
