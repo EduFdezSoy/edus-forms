@@ -3,7 +3,7 @@
     "configurations": [
         {
             // uses pocketbase
-            // pocketbase serve -- publicDir ./
+            // pocketbase serve --publicDir ./
             "name": "Launch index.html",
             "type": "firefox",
             "request": "launch",
