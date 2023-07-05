@@ -16,7 +16,8 @@ async function init() {
     // no form = show form generator
     if (pathVar == "" || pathVar == "/") {
         // TODO: check user rights
-        // TODO: create form generator
+        document.getElementById("create-form-dg").setAttribute("open", "");
+        // TODO: save to database and redirect to new_id-edit
 
     } else { // if data in path
         const formID = pathVar.split("-")[0].replace(/^\/+/, "");
@@ -26,6 +27,10 @@ async function init() {
         // TODO: add a loop till null div example: element-01
         const element = document.getElementById("element-01");
         formInputCount++;
+
+        // TODO: if form not found in database
+        // setError(404, "This form was not found");
+
 
         if (pathVar.split("-")[1] == "edit") { // if edit flag, open editor
             // TODO: check if the user has edit rights (add a config variable to check or not to check this)
@@ -221,7 +226,7 @@ function prepareElement(input) {
  * 
  * @param {HTMLElement} input element to put the listener to
  * @param {HTMLElement} output element to add the value on event
- * @param {string} attribute attribute to put the value to
+ * @param {String} attribute attribute to put the value to
  */
 function setInputListener(input, output, attribute) {
     input.addEventListener("input", (e) => {
@@ -229,4 +234,20 @@ function setInputListener(input, output, attribute) {
     });
 }
 
+/**
+ * puts an error dialog on the screen
+ * 
+ * @param {Number} errCode example: 404
+ * @param {String} errMessage example: not found
+ */
+function setError(errCode, errMessage) {
+    const errDialog = document.getElementById("error-dg");
+
+    // put error
+    errDialog.querySelector("span").textContent = errCode;
+    errDialog.querySelector("h2").textContent = errMessage;
+
+    // set visible
+    errDialog.setAttribute("open", "");
+}
 //#endregion
