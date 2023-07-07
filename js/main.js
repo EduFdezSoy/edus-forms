@@ -55,6 +55,8 @@ async function init() {
     // show the form title
     document.getElementById("form-title").textContent = form.name;
 
+    generateForm('[{"type":"text", "value": null, "placeholder":"dickbut", "label":"tesst: ", "label-position":"side"}]');
+
     // TODO: add a loop till null div example: element-01
     const element = document.getElementById("element-01");
     formInputCount++;
@@ -63,8 +65,8 @@ async function init() {
     if (pathVar.split("-")[1] == "edit") {
       // TODO: check if the user has edit rights (add a config variable to check or not to check this)
 
-    // set title
-    document.getElementById("form-title").textContent += " - Edit Mode"
+      // set title
+      document.getElementById("form-title").textContent += " - Edit Mode";
 
       setEditor(element);
 
@@ -83,6 +85,47 @@ async function init() {
  */
 function mainLoop() {
   setTimeout(() => {}, constants.LOOP_TIME);
+}
+
+/**
+ * Generate the form from the json given by the server
+ *
+ * @param {JSON} json
+ */
+function generateForm(json) {
+  const formObj = JSON.parse(json);
+  const formSection = document.getElementById("form");
+
+  console.log(formObj);
+
+  formObj.forEach((element) => {
+    const newDiv = document.createElement("div");
+    const newLabel = document.createElement("label");
+    const newInput = document.createElement("input");
+
+    newDiv.appendChild(newLabel);
+    newDiv.appendChild(newInput);
+    formSection.appendChild(newDiv);
+
+    const keys = Object.keys(element);
+    keys.forEach((key) => {
+      switch (key) {
+        case "label":
+          newLabel.textContent = element[key];
+          break;
+
+        case "label-position":
+          setLabelPosition(newLabel, element[key]);
+          break;
+
+        default:
+          if (element[key] != null) {
+            newInput.setAttribute(key, element[key]);
+          }
+          break;
+      }
+    });
+  });
 }
 
 /**
@@ -138,27 +181,9 @@ function setEditor(element) {
   setInputListener(typeInput, input, "type");
   setInputListener(valueInput, input, "value");
   // label position selector
+  
   labelPositionInput.addEventListener("input", (e) => {
-    switch (e.target.value) {
-      case "top":
-        label.style.display = "inline";
-        if (!(label.nextElementSibling instanceof HTMLBRElement))
-          label.nextElementSibling.parentNode.insertBefore(
-            document.createElement("br"),
-            label.nextElementSibling
-          );
-        break;
-      case "side":
-        label.style.display = "inline";
-        if (label.nextElementSibling instanceof HTMLBRElement)
-          label.nextElementSibling.remove();
-        break;
-      case "hide":
-        label.style.display = "none";
-        if (label.nextElementSibling instanceof HTMLBRElement)
-          label.nextElementSibling.remove();
-        break;
-    }
+    setLabelPosition(label, e.target.value);
   });
 
   // set ids
@@ -294,4 +319,28 @@ function setError(errCode, errMessage, close = false) {
 
   // set visible
   errDialog.setAttribute("open", "");
+}
+
+
+function setLabelPosition(label, value) {
+  switch (value) {
+    case "top":
+      label.style.display = "inline";
+      if (!(label.nextElementSibling instanceof HTMLBRElement))
+        label.nextElementSibling.parentNode.insertBefore(
+          document.createElement("br"),
+          label.nextElementSibling
+        );
+      break;
+    case "side":
+      label.style.display = "inline";
+      if (label.nextElementSibling instanceof HTMLBRElement)
+        label.nextElementSibling.remove();
+      break;
+    case "hide":
+      label.style.display = "none";
+      if (label.nextElementSibling instanceof HTMLBRElement)
+        label.nextElementSibling.remove();
+      break;
+  }
 }
