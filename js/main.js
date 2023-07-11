@@ -49,17 +49,10 @@ async function init() {
       setError(404, "This form was not found");
     }
 
-    // FIXME: debug show the form
-    console.log(form);
-
     // show the form title
     document.getElementById("form-title").textContent = form.name;
 
-    generateForm('[{"type":"text", "value": null, "placeholder":"dickbut", "label":"tesst: ", "label-position":"side"}]');
-
-    // TODO: add a loop till null div example: element-01
-    const element = document.getElementById("element-01");
-    formInputCount++;
+    generateForm(form.form);
 
     // if edit flag, open editor
     if (pathVar.split("-")[1] == "edit") {
@@ -68,7 +61,13 @@ async function init() {
       // set title
       document.getElementById("form-title").textContent += " - Edit Mode";
 
-      setEditor(element);
+      // get the form container and add the editor
+      const form_container = document.getElementById("form");
+      for (let i = 0; i < form_container.children.length; i++) {
+        const element = form_container.children[i];
+        setEditor(element);
+
+      }
 
       // set add input form button event
       const addInputBtn = document.getElementById("add-form-entry");
@@ -84,7 +83,7 @@ async function init() {
  * main loop, currently just eating memory
  */
 function mainLoop() {
-  setTimeout(() => {}, constants.LOOP_TIME);
+  setTimeout(() => { }, constants.LOOP_TIME);
 }
 
 /**
@@ -93,15 +92,22 @@ function mainLoop() {
  * @param {JSON} json
  */
 function generateForm(json) {
-  const formObj = JSON.parse(json);
-  const formSection = document.getElementById("form");
+  let formObj;
 
-  console.log(formObj);
+  if (typeof json == "string" || json instanceof String) {
+    formObj = JSON.parse(json);
+  } else {
+    formObj = json;
+  }
+
+  const formSection = document.getElementById("form");
 
   formObj.forEach((element) => {
     const newDiv = document.createElement("div");
     const newLabel = document.createElement("label");
     const newInput = document.createElement("input");
+
+    newDiv.setAttribute("id", `element-${(++formInputCount).toString().padStart(2, "0")}`)
 
     newDiv.appendChild(newLabel);
     newDiv.appendChild(newInput);
@@ -117,6 +123,9 @@ function generateForm(json) {
         case "label-position":
           setLabelPosition(newLabel, element[key]);
           break;
+
+        case "position":
+          newDiv.setAttribute(key, element[key]);
 
         default:
           if (element[key] != null) {
@@ -181,7 +190,7 @@ function setEditor(element) {
   setInputListener(typeInput, input, "type");
   setInputListener(valueInput, input, "value");
   // label position selector
-  
+
   labelPositionInput.addEventListener("input", (e) => {
     setLabelPosition(label, e.target.value);
   });
@@ -202,9 +211,14 @@ function setEditor(element) {
     let pos = element.getAttribute("position");
 
     if (pos > 0) {
+      // move element
       element.setAttribute("position", --pos);
-
       element.parentNode.insertBefore(element, element.previousElementSibling);
+
+      // change position attribute from next sibling
+      siblingPositionValue = element.nextElementSibling.getAttribute("position");
+      element.nextElementSibling.setAttribute("position", ++siblingPositionValue);
+
       // TODO: save to database
     }
   });
@@ -213,6 +227,11 @@ function setEditor(element) {
     let pos = element.getAttribute("position");
 
     if (element.nextElementSibling) {
+      // change position attribute from next sibling
+      siblingPositionValue = element.nextElementSibling.getAttribute("position");
+      element.nextElementSibling.setAttribute("position", --siblingPositionValue);
+
+      // move element
       element.setAttribute("position", ++pos);
       element.parentNode.insertBefore(element.nextElementSibling, element);
     }
