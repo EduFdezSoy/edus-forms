@@ -100,6 +100,9 @@ function generateForm(json) {
     formObj = json;
   }
 
+  // order by position
+  formObj.sort((a, b) => a.position - b.position);
+
   const formSection = document.getElementById("form");
 
   formObj.forEach((element) => {
